@@ -1,0 +1,25 @@
+{
+  "name": "conebot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./src/bot.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon ./src/bot.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VictorGamerLOL/ConeBot.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/VictorGamerLOL/ConeBot/issues"
+  },
+  "homepage": "https://github.com/VictorGamerLOL/ConeBot#readme",
+  "dependencies": {
+    "discord.js": "^12.5.3"
+  }
+}
