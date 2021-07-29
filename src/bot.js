@@ -8,7 +8,7 @@ const logger = require("./utils/logger")
 
 
 const client = new Discord.Client({intents: Discord.Intents.ALL,partials: ['MESSAGE', 'CHANNEL', 'REACTION']}); //Init Discord Client Instance
-
+client.commands = new Discord.Collection();
 const commandFolders = fs.readdirSync(path.join(__dirname, './commands')); //Get folder of commands and sync with fs
 
 
