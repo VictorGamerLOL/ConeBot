@@ -53,7 +53,7 @@ client.on('message', async function (message){
 		|| client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName)); //gets command from our required commands
 
 	if (!command) return; //if the command is not found return
-
+	logger.info(`${message.author.id} executed the ${commandName} command`)
 	try {
 		command.execute(message, args); // if it is found execute the command
 	} catch (error) {
