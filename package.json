@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/VictorGamerLOL/ConeBot#readme",
   "dependencies": {
+    "chalk": "^4.1.1",
     "discord.js": "^12.5.3"
   }
 }
