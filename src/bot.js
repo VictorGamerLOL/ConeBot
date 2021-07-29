@@ -58,7 +58,7 @@ client.on('message', async function (message){
 		command.execute(message, args); // if it is found execute the command
 	} catch (error) {
 		logger.error(error)
-		message.channel.send('there was an error trying to execute that command!'); //error
+		message.channel.send('there was an error trying to execute that command!'); //error handler
 	}
 });
 
