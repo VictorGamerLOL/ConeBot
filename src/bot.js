@@ -1,5 +1,5 @@
-<<<<<<< Updated upstream
-=======
+
+
 const fs = require('fs');
 const Discord = require('discord.js');
 const path = require('path');
@@ -64,4 +64,4 @@ client.on('message', async function (message){
 
 logger.info("Logging in..")
 client.login(token);
->>>>>>> Stashed changes
+

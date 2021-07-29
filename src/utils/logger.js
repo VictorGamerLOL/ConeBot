@@ -1,5 +1,4 @@
-<<<<<<< Updated upstream
-=======
+
 const chalk = require('chalk');
  //dont worry about this its basically just a logger
 function info (args, args2) {
@@ -21,4 +20,3 @@ module.exports = {
     info: info,
     error: error
 }
->>>>>>> Stashed changes
