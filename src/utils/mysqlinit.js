@@ -1,4 +1,4 @@
-const mysql = require('mysql');
+const mysql = require('mysql2/promise');
 const {mysqlsecret}= require('../../secrets.json');
 const logger = require("./logger")
 
@@ -15,8 +15,8 @@ pool.on('error', function(err) {
     console.log(err.code);
   });
 
-const promisePool = pool.promise();
+//const promisePool = pool.promise();
   // query database using promises
 
 
-module.exports = promisePool
+module.exports = pool // run it
