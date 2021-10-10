@@ -6,7 +6,8 @@ module.exports = {
     name: 'newtable',
     description: 'make a new table',
     async execute(message, args) {
-        const [res] = await db.query(`UPDATE cones SET ActualImage = ${bytes.parse("../../../trial images/cone (1)")}`)
+        const tablename = args[0]
+        const [res] = await db.query(`CREATE TABLE ${tablename} (name varchar(255))`)
         console.log(res) 
         } 
 }
