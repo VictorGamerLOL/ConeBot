@@ -5,6 +5,7 @@ const Discord = require('discord.js');
 const path = require('path');
 const {prefix, token} = require('../secrets.json');
 const logger = require("./utils/logger")
+const db = require ("./utils/mysqlinit")
 
 
 const client = new Discord.Client({intents: Discord.Intents.ALL,partials: ['MESSAGE', 'CHANNEL', 'REACTION']}); //Init Discord Client Instance
@@ -61,6 +62,8 @@ client.on('message', async function (message){
 		message.channel.send('there was an error trying to execute that command!'); //error handler
 	}
 });
+
+
 
 logger.info("Logging in..")
 client.login(token);
