@@ -6,6 +6,7 @@ const path = require('path');
 const {prefix, token} = require('../secrets.json');
 const logger = require("./utils/logger")
 const db = require ("./utils/mysqlinit")
+const talkedRecently = new Set();
 
 
 const client = new Discord.Client({intents: Discord.Intents.ALL,partials: ['MESSAGE', 'CHANNEL', 'REACTION']}); //Init Discord Client Instance
@@ -60,6 +61,12 @@ client.on('message', async function (message){
 	} catch (error) {
 		logger.error(error)
 		message.channel.send('there was an error trying to execute that command!'); //error handler
+	}
+	if (!talkedRecently.has(msg.author.id)) {
+		talkedRecently.add(msg.author.id)
+		setTimeout(() => {
+			talkedRecently.delete(msg.author.id)
+		}, 1000);
 	}
 });
 
