@@ -8,7 +8,7 @@ module.exports = {
         logger.info("With the ID of", guild.id)
         logger.info("Making new tables...")
         try {
-            const[curTable] = await db.query(`CREATE TABLE ${guild.id}currencies (name varchar(255), symbol varchar(255), earn bool, cooldown bigint(255))`)
+            const[curTable] = await db.query(`CREATE TABLE ${guild.id}currencies (name varchar(255), symbol varchar(255), earn bool, cooldown bigint(255), rate bigint(255))`)
             const[usrTable] = await db.query(`CREATE TABLE ${guild.id}users (id bigint(255))`)
             console.log(curTable)
             console.log(usrTable)
