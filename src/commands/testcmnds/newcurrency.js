@@ -5,7 +5,7 @@ module.exports = {
     description: 'Allows the user to create a new currency for their guild',
     async execute(message, args) {
         if (args.length == 5) {
-            function fcur() {
+            async function fcur() {
                 var [cur] = await db.query(`ALTER TABLE ${message.guild.id}users ADD ${args[0]} bigint(255)`)
                 console.log(cur)
             }
