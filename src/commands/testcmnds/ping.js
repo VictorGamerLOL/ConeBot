@@ -19,3 +19,9 @@ module.exports = {
 		message.channel.send(`🏓 Pong! ${Date.now() - message.createdTimestamp}ms`, [pingembed]);
 	},
 };
+
+/* Do I really need to explain any of this?
+Sends an embed with the delay of the bot and
+what time the computer is on right now. If it
+appears in the negatives please sync your computer time
+*/
