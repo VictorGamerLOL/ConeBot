@@ -23,7 +23,8 @@
     "chalk": "^4.1.2",
     "discord.js": "^12.5.3",
     "mysql": "^2.18.1",
-    "mysql2": "^2.2.5"
+    "mysql2": "^2.2.5",
+    "nodemon": "^2.0.15"
   },
   "devDependencies": {
     "eslint": "^8.5.0"
