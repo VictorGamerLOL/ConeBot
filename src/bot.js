@@ -62,10 +62,10 @@ client.on('message', async function (message){
 		logger.error(error)
 		message.channel.send('there was an error trying to execute that command!'); //error handler
 	}
-	if (!talkedRecently.has(msg.author.id)) {
-		talkedRecently.add(msg.author.id)
+	if (!talkedRecently.has(message.author.id)) {
+		talkedRecently.add(message.author.id)
 		setTimeout(() => {
-			talkedRecently.delete(msg.author.id)
+			talkedRecently.delete(message.author.id)
 		}, 1000);
 	}
 });

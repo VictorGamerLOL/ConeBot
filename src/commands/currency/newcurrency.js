@@ -4,15 +4,15 @@ module.exports = {
     name: 'newcurrency',
     description: 'Allows the user to create a new currency for their guild', 
     async execute(message, args) {
+        async function fcur() { //Function for adding column in the guild's user table
+            var [cur] = await db.query(`ALTER TABLE ${message.guild.id}users ADD ${args[0]} bigint(255)`) //Add new currency column in the users table
+            console.log(cur) //Log the SQL output
+        }
         if (args.length == 5) { 
             /* Take 5 arguments from the user in order to make the currency. The name, the symbol,
                 whenever the currency is earnable by chatting, the cooldown of how often a user can earn it and
                 how much at a time.
             */
-            async function fcur() { //Function for adding column in the guild's user table
-                var [cur] = await db.query(`ALTER TABLE ${message.guild.id}users ADD ${args[0]} bigint(255)`) //Add new currency column in the users table
-                console.log(cur) //Log the SQL output
-            }
             try {
                 logger.info(`${message.guild.id} is making a new currency named ${args[0]}`) //Log in the console which server did this and what is the name of the currency
                 if (args[2] == "t") { //Check if user wants the currency to be earnable
@@ -27,7 +27,7 @@ module.exports = {
                         let [cur2] = await db.query(`INSERT INTO ${message.guild.id}currencies VALUES ('${args[0]}', '${args[1]}', 1, ${args[3]}, ${args[4]}`) //Create new currency in the guild's currency table
                         console.log(cur2)
                         fcur() //And the other thing
-                    } //If the user did not input numeric values for rate & cooldown, inform them
+                    } //If the user did not input numeric values for rate & cooldown, inform them.
                 } else {
                     message.channel.send(`The value of earnable must be "t" or "f" (case sensitive)`) //If the user did not put t or f, tell them
                 }
@@ -39,14 +39,15 @@ module.exports = {
             message.channel.send(`Please provide rate along with cooldown of earning.`) //If only 4 arguments were provided throw error
         } else if (args.length == 3) {
             if (args[2] == "f") { //Check if user said false at 3 arguments
-                let [cur2] = await db.query(`INSERT INTO ${message.guild.id}currencies VALUES ('${args[0]}', '${args[1]}', 0`) //Create new currency in the guild's currency table
+                let [cur2] = await db.query(`INSERT INTO ${message.guild.id}currencies (name, symbol, earn) VALUES ('${args[0]}', '${args[1]}', 0)`) //Create new currency in the guild's currency table
                 console.log(cur2) //Log the SQL
                 fcur() //The thing
+                message.channel.send(`Successfully created new currency named ${args[0]} with the symbol of ${args[1]}`) //Inform the user on successful creation of currency
             } else {
                 message.channel.send(`Please provide cooldown and rate if you said true`) // If he said true throw error
             }
         } else if (args.length == 2) { //If only name and symbol are provided, default to false
-            let [cur2] = await db.query(`INSERT INTO ${message.guild.id}currencies VALUES ('${args[0]}', '${args[1]}', 0`) //Create new currency in the guild's currency table
+            let [cur2] = await db.query(`INSERT INTO ${message.guild.id}currencies VALUES ('${args[0]}', '${args[1]}', 0)`) //Create new currency in the guild's currency table
             console.log(cur2)
             fcur()
         } else if (args.length == 1) {
