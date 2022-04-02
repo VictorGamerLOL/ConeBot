@@ -47,7 +47,7 @@ module.exports = {
                 message.channel.send(`Please provide cooldown and rate if you said true`) // If he said true throw error
             }
         } else if (args.length == 2) { //If only name and symbol are provided, default to false
-            let [cur2] = await db.query(`INSERT INTO ${message.guild.id}currencies VALUES ('${args[0]}', '${args[1]}', 0)`) //Create new currency in the guild's currency table
+            let [cur2] = await db.query(`INSERT INTO ${message.guild.id}currencies (name, symbol, earn) VALUES ('${args[0]}', '${args[1]}', 0)`) //Create new currency in the guild's currency table
             console.log(cur2)
             fcur()
         } else if (args.length == 1) {

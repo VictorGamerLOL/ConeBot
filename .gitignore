@@ -104,3 +104,6 @@ dist
 .tern-port
 test.js
 .vscode/settings.json
+
+# The secrets file contains sensitive data which should not be tracked in git
+secrets.json
