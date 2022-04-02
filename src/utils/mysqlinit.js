@@ -1,5 +1,5 @@
 const mysql = require('mysql2/promise');
-const {mysqlsecret}= require('../../secrets.json');
+const {mysqlsecret}= require('../../secretss.json');
 const logger = require("./logger")
 
 

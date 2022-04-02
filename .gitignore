@@ -105,6 +105,5 @@ dist
 test.js
 .vscode/settings.json
 
-# The secrets file contains sensitive data which should not be tracked in git
-secrets.json
-secrets.json
+# The name of the secrets file on my machine so it does not get pushed to git
+secretss.json

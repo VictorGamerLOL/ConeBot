@@ -3,7 +3,7 @@
 const fs = require('fs');
 const Discord = require('discord.js');
 const path = require('path');
-const {prefix, token} = require('../secrets.json');
+const {prefix, token} = require('../secretss.json');
 const logger = require("./utils/logger")
 const db = require ("./utils/mysqlinit")
 const talkedRecently = new Set();
