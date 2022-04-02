@@ -10,7 +10,7 @@ module.exports = {
 			.setAuthor('Cone', message.client.user.avatarURL({}))
 			.setDescription(`${Date.now() - message.createdTimestamp}ms`)
 			.addField(
-				'Current server time (BST)',
+				'Current server time (UTC)',
 				new Date().toISOString().replace(/T/, ' ').replace('Z', ''),
 				false
 			)
