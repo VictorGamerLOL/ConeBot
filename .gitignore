@@ -107,3 +107,4 @@ test.js
 
 # The secrets file contains sensitive data which should not be tracked in git
 secrets.json
+secrets.json
