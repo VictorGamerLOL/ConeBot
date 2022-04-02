@@ -1,5 +1,5 @@
-const logger = require('../../util/logger');
-const db = require('../../util/mysqlinit')
+const logger = require('../../utils/logger');
+const db = require('../../utils/mysqlinit')
 module.exports = {
     name: 'bal',
     description: 'Check your balance for a specific currency',
