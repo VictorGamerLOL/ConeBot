@@ -1,5 +1,6 @@
 const logger = require('../utils/logger')
 const db = require ("../utils/mysqlinit")
+const sql = require("../utils/SQLhandler")
 module.exports = {
     name: 'guildCreate',
     once: false,
@@ -8,10 +9,7 @@ module.exports = {
         logger.info("With the ID of", guild.id)
         logger.info("Making new tables...")
         try {
-            const[curTable] = await db.query(`CREATE TABLE ${guild.id}currencies (name varchar(255), symbol varchar(255), earn bool, cooldown bigint(255), rate bigint(255), PRIMARY KEY (name))`)
-            const[usrTable] = await db.query(`CREATE TABLE ${guild.id}users (id bigint(255), PRIMARY KEY (id))`)
-            console.log(curTable)
-            console.log(usrTable)
+            sql.guildInit(guild.id)
         } catch (error){
             logger.error(error)
             logger.error('The tables probably already exist')

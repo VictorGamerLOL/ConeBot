@@ -12,6 +12,12 @@ const SQLhandler = {
         console.log(cur)
         let [cur2] = await db.query(`DELETE FROM ${guildid}currencies WHERE name='${name}'`)
         console.log(cur2)
+    },
+    "guildInit": async function(guild) {
+        let [tbl] = await db.query(`CREATE TABLE ${guild.id}currencies (name varchar(255), symbol varchar(255), earn bool, cooldown bigint(255), rate bigint(255), PRIMARY KEY (name))`)
+        console.log(tbl)
+        let [tbl2] = await db.query(`CREATE TABLE ${guild.id}users (id bigint(255), PRIMARY KEY (id))`)
+        console.log(tbl2)
     }
 }
 module.exports = SQLhandler

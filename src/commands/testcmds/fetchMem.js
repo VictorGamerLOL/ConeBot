@@ -1,5 +1,3 @@
-const Discord = require('discord.js');
-var fs = require('fs');
 module.exports = {
     name: 'fetchMem',   
     aliases: ['fetch', 'fm'],
