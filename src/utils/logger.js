@@ -1,5 +1,6 @@
 
 const chalk = require('chalk');
+const fs = require('fs');
  //dont worry about this its basically just a logger
 function info (args, args2) {
     if (args2 == null) {
@@ -16,7 +17,15 @@ function error (args) {
 
 }
 
+function sql (args) {
+    let line = (new Date().toISOString().replace(/T/, ' ').replace(/Z/, '') + " :: SQL :: " + `${args}\n`);
+    fs.appendFile('./logs/sql.log', line, function (err) {
+        if (err) throw err;
+    })
+}
+
 module.exports = {
     info: info,
-    error: error
+    error: error,
+    sql: sql
 }

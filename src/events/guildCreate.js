@@ -9,7 +9,7 @@ module.exports = {
         logger.info("With the ID of", guild.id)
         logger.info("Making new tables...")
         try {
-            sql.guildInit(guild.id)
+            sql.guildInit(guild.id,guild.members)
         } catch (error){
             logger.error(error)
             logger.error('The tables probably already exist')
