@@ -6,13 +6,16 @@ A currency bot designed to handle multiple currencies in the same server. The bo
 - [x] Deleting currencies.
 - [x] Checking the balance of all currencies for yourself.
 - [x] Checking the balance of an individual currency for yourself.
-- [ ] Checking someone else's balance.
+- [x] Checking someone else's balance.
 - [ ] Commands for admins to manually add or substract currencies
 - [ ] Check permissions of people to see if they can run admin commands.
+- [ ] Make bot available to public (it probably is if you are reading this).
 - [ ] Earn currency from chatting.
+- [ ] Allow users to transfer currency to eachother.
+- [ ] Make all commands toggleable.
 - [ ] Exchange currencies between eachother if admins allow it to.
 - [ ] Syncronise specific currencies cross-server if they mutually agree.
-- [ ] Item shop.
+- [ ] Item shop similar to unbelievaboat.
 
 I did not see any bot that allows for such currency management. Closest one is Unbelievaboat but it does not allow for multiple currencies.
 
