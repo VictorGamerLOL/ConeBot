@@ -10,9 +10,7 @@ module.exports = {
         if (args.length == 2) {
             if (args[0].startsWith("<@&")) {
                 message.channel.send("Not only did you try something I cannot do, you also probably pinged a lot of people. I hope you are happy with this.");
-            } else if (args[0] == "@everyone") {
-                message.channel.send("Hey smartass thats not how you get the leaderboard. You are just being annoying.")
-            } else if (args[0] == "@here") {
+            } else if (args[0] == "@everyone" || args[0] == "@here") {
                 message.channel.send("Hey smartass thats not how you get the leaderboard. You are just being annoying.")
             } else if (args[0].startsWith("<@")) {
                 try {
@@ -35,9 +33,7 @@ module.exports = {
         }else if (args.length == 1) { 
             if (args[0].startsWith("<@&")) {
                 message.channel.send("Not only did you try something I cannot do, you also probably pinged a lot of people. I hope you are happy with this.");
-            } else if (args[0] == "@everyone") {
-                message.channel.send("Hey smartass thats not how you get the leaderboard. You are just being annoying.")
-            } else if (args[0] == "@here") {
+            } else if (args[0] == "@everyone" || args[0] == "@here") {
                 message.channel.send("Hey smartass thats not how you get the leaderboard. You are just being annoying.")
             } else if (args[0].startsWith("<@")) {
                 let [cur] = await sql.selectWhere("*", message.guild.id, "users", "id", args[0].slice(2, -1))
