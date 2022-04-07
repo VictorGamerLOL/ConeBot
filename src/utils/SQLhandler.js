@@ -7,6 +7,8 @@ const SQLhandler = {
         logger.sql(JSON.stringify(cur))
         let [cur2] = await db.query(`ALTER TABLE ${guildid}users ADD ${name} bigint(255)`)
         logger.sql(JSON.stringify(cur2))
+        let [updt] = await db.query(`UPDATE ${guildid}users SET ${name} = 0`)
+        logger.sql(JSON.stringify(updt))
     },
     "delCur": async function(guildid,name) {
         let [cur] = await db.query(`ALTER TABLE ${guildid}users DROP ${name}`)
@@ -35,6 +37,17 @@ const SQLhandler = {
         let [res] = await db.query(`SELECT ${what} FROM ${guildid}${whatTable}`)
         logger.sql(JSON.stringify(res))
         return [res]
+    },
+    "updateMultiple": async function(guildid, what, whatTable, whatValue, where, whereValue) {
+        let query = `UPDATE ${guildid}${whatTable} SET ${what} = ${whatValue} WHERE ${where} =`
+        for (let i = 0; i < whereValue.length; i++) {
+            query += ` ${whereValue[i]}`
+            if (i != whereValue.length-1) {
+                query += ` OR ${where} =`
+            }
+        }
+        let [testt] = await db.query(query)
+        logger.sql(JSON.stringify(testt))
     }
 }
 module.exports = SQLhandler
