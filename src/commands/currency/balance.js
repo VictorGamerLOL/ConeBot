@@ -13,6 +13,7 @@ module.exports = {
             } else if (args[0] == "@everyone" || args[0] == "@here") {
                 message.channel.send("Hey smartass thats not how you get the leaderboard. You are just being annoying.")
             } else if (args[0].startsWith("<@")) {
+                args[1] = args[1].replace(/_/g, " ")
                 try {
                     let [cur] = await sql.selectWhere("*", message.guild.id, "users", "id", args[0].slice(2, -1))
                     if (cur.length == 0) {
@@ -58,6 +59,7 @@ module.exports = {
                 }   
             } else {
                 try {
+                    args[0] = args[0].replace(/_/g, " ")
                     let [cur] = await sql.selectWhere(args[0], message.guild.id, "users", "id", message.author.id)
                     message.channel.send(`You have ${cur[0][args[0]]} ${args[0]}`)
                 } catch {

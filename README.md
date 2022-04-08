@@ -7,7 +7,7 @@ A currency bot designed to handle multiple currencies in the same server. The bo
 - [x] Checking the balance of all currencies for yourself.
 - [x] Checking the balance of an individual currency for yourself.
 - [x] Checking someone else's balance.
-- [ ] Commands for admins to manually add or substract currencies
+- [x] Commands for admins to manually add or substract currencies
 - [ ] Check permissions of people to see if they can run admin commands.
 - [ ] Help command (very hard)
 - [ ] Make bot available to public (it probably is if you are reading this).
