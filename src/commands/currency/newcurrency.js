@@ -5,6 +5,7 @@ module.exports = {
     aliases: ['newcur', 'nc'],
     description: 'Allows the user to create a new currency for their guild', 
     async execute(message, args) {
+        args[0] = args[0].replace(/_/g, " ")
         if (args.length == 5) { 
             logger.info(`${message.guild.id} is making a new currency named ${args[0]}`)
             if (args[2] == "t" && !isNaN(args[3]) && !isNaN(args[4])) {
@@ -29,7 +30,7 @@ module.exports = {
         } else if (args.length == 3) {
             if (args[2] == "f") { 
                 sql.addCur(message.guild.id, args[0], args[1], 0, null, null) 
-                message.channel.send(`Successfully created new currency named ${args[0]} with the symbol of ${args[1]}`)
+                message.channel.send(`Successfully created new currency named ${args[0]} with the symbol of ${args[1]}.`)
                 logger.info(`${message.guild.id} has created a new currency named ${args[0]} with the symbol of ${args[1]}`)
             } else {
                 message.channel.send(`Please provide cooldown and rate if you said true about earning.`)
@@ -37,13 +38,13 @@ module.exports = {
             }
         } else if (args.length == 2) { 
             sql.addCur(message.guild.id, args[0], args[1], 0, null, null)
-            message.channel.send(`Successfully created new currency named ${args[0]} with the symbol of ${args[1]}`)
+            message.channel.send(`Successfully created new currency named ${args[0]} with the symbol of ${args[1]}.`)
             logger.info(`${message.guild.id} has created a new currency named ${args[0]} with the symbol of ${args[1]}`)
         } else if (args.length == 1) {
-            message.channel.send(`Currency symbol is mandatory`)
+            message.channel.send(`Currency symbol is mandatory.`)
             logger.error(`${message.guild.id} has attempted to create a new currency named ${args[0]} but did not provide a symbol`)
         } else {
-            message.channel.send(`I do not know what you wanted to do but I do not take this many arguments`)
+            message.channel.send(`I do not know what you wanted to do but I do not take this many arguments.`)
             logger.error(`${message.guild.id} has attempted to create a new currency but did not provide enough arguments`)
         }
     }
