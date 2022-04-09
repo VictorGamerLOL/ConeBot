@@ -15,7 +15,7 @@ module.exports = {
             } else if (args[0].startsWith("<@")) {
                 args[1] = args[1].replace(/_/g, " ")
                 try {
-                    let [cur] = await sql.selectWhere("*", message.guild.id, "users", "id", args[0].slice(2, -1))
+                    let [cur] = await sql.selectWhere(args[1], message.guild.id, "users", "id", args[0].slice(2, -1))
                     if (cur.length == 0) {
                         message.channel.send("User not found")
                     } else {

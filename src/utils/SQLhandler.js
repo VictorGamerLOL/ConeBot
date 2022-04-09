@@ -4,12 +4,16 @@ const logger = require(`./logger`)
 
 const SQLhandler = {
     "addCur": async function(guildid,name,symbol,earn,cooldown,rate) {
-        let [cur] = await db.query(`INSERT INTO ${guildid}currencies (name, symbol, earn, cooldown, rate) VALUES ("${name}","${symbol}",${earn},${cooldown},${rate})`)
-        logger.sql(JSON.stringify(cur))
-        let [cur2] = await db.query(`ALTER TABLE ${guildid}users ADD \`${name}\` bigint(255)`)
-        logger.sql(JSON.stringify(cur2))
-        let [updt] = await db.query(`UPDATE ${guildid}users SET \`${name}\` = 0`)
-        logger.sql(JSON.stringify(updt))
+        try {
+            let [cur] = await db.query(`ALTER TABLE ${guildid}users ADD \`${name}\` bigint(255)`)
+            let [cur2] = await db.query(`INSERT INTO ${guildid}currencies (name, symbol, earn, cooldown, rate) VALUES ("${name}","${symbol}",${earn},${cooldown},${rate})`)
+            let [updt] = await db.query(`UPDATE ${guildid}users SET \`${name}\` = 0`)
+            logger.sql(JSON.stringify(cur))
+            logger.sql(JSON.stringify(cur2))
+            logger.sql(JSON.stringify(updt))
+        } catch {
+            throw "Error"
+        }
     },
     "delCur": async function(guildid,name) {
         let [cur] = await db.query(`ALTER TABLE ${guildid}users DROP \`${name}\``)
@@ -18,10 +22,6 @@ const SQLhandler = {
         logger.sql(JSON.stringify(cur2))
     },
     "guildInit": async function(guildid, guildmembers) {
-        let [tbl] = await db.query(`CREATE TABLE ${guildid}currencies (id int NOT NULL AUTO_INCREMENT, name varchar(255), symbol varchar(255), earn bool, cooldown bigint(255), rate bigint(255), PRIMARY KEY (id))`)
-        logger.sql(JSON.stringify(tbl))
-        let [tbl2] = await db.query(`CREATE TABLE ${guildid}users (id bigint(255), PRIMARY KEY (id))`)
-        logger.sql(JSON.stringify(tbl2))
         members = await guildmembers.fetch({force: true})
         ids = ``
         Array.from(members.values()).forEach(async function(value) {
@@ -29,8 +29,27 @@ const SQLhandler = {
             ids = ids + `(${value.id}), `
         })
         ids = ids.slice(0, -2)  //remove last comma to stop syntax error
-        let [res] = await db.query(`INSERT INTO ${guildid}users VALUES` + ids)
-        logger.sql(JSON.stringify(res))
+        try{
+            let [tbl] = await db.query(`CREATE TABLE ${guildid}currencies (id int NOT NULL AUTO_INCREMENT, name varchar(255), symbol varchar(255), earn bool, cooldown bigint(255), rate bigint(255), PRIMARY KEY (id))`)
+            let [tbl2] = await db.query(`CREATE TABLE ${guildid}users (id bigint(255), PRIMARY KEY (id))`)
+            let [res] = await db.query(`INSERT INTO ${guildid}users VALUES` + ids)
+            logger.sql(JSON.stringify(tbl))
+            logger.sql(JSON.stringify(tbl2))
+            logger.sql(JSON.stringify(res))
+        } catch{
+            throw "Error"
+        }
+        
+    },
+    "guildDel": async function(guildid) {
+        try{
+            let [tbl] = await db.query(`DROP TABLE ${guildid}currencies`)
+            let [tbl2] = await db.query(`DROP TABLE ${guildid}users`)
+            logger.sql(JSON.stringify(tbl))
+            logger.sql(JSON.stringify(tbl2))
+        } catch{
+            throw "Error"
+        }
     },
     "selectWhere": async function(what, guildid, whatTable, where, whatValue) {
         if (what == "*") {
