@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node ./src/bot.js",
+    "start": "ts-node ./src/bot.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon ./src/bot.js"
+    "dev": "nodemon ./src/bot.ts"
   },
   "repository": {
     "type": "git",

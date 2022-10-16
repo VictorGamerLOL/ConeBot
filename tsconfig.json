@@ -15,10 +15,18 @@
       "noImplicitAny": true,
       "removeComments": true,
       "preserveConstEnums": true,
-      "sourceMap": true
+      "sourceMap": true,
+      "typeRoots": ["./node_modules/@types", "src/types/*.d.ts"],
+      "paths": {
+        "*": ["src/types/*.d.ts"]
+      }
     }
   },
   "compilerOptions": {
     // typescript options here
+    "typeRoots": ["./node_modules/@types", "src/types/"],
+    "paths": {
+      "*": ["src/types/*.d.ts"]
+    }
   }
 }
