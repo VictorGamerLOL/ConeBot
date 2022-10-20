@@ -8,7 +8,9 @@ import fs from "fs";
 import * as dotenv from "dotenv";
 dotenv.config();
 import logger from "./utils/logger";
+import sql from "./utils/sql-handler";
 import Discord from "discord.js";
+import db from "./utils/bot-db";
 const REST = new Discord.REST({ version: "10" });
 const TOKEN = process.env.TOKEN;
 let defaultPrefix = process.env.PREFIX;
@@ -81,18 +83,16 @@ const initCommands: () => Promise<void> = async () => {
       commands.set(command.name, command); //Add the command to the collection
       slashCommands.push(command.slashBuilder()); //Add the command to the slashCommands array
       logger.info("Registered command ", command.name);
-      try {
-        logger.info(
-          `Started reloading ${slashCommands.length} slash commands.`
-        );
-        const data: any = await REST.put(
-          Discord.Routes.applicationCommands(CLIENTID),
-          { body: slashCommands }
-        );
-        logger.info(`Successfully reloaded ${data.length} slash commands.`);
-      } catch (error) {
-        console.error(error);
-      }
+    }
+    try {
+      logger.info(`Started reloading ${slashCommands.length} slash commands.`);
+      const data: any = await REST.put(
+        Discord.Routes.applicationCommands(CLIENTID),
+        { body: slashCommands }
+      );
+      logger.info(`Successfully reloaded ${data.length} slash commands.`);
+    } catch (error) {
+      console.error(error);
     }
   }
 };
@@ -106,9 +106,13 @@ const initListeners: () => Promise<void> = async () => {
     const command = commands.get(interaction.commandName);
     if (!command) return;
     let argsArr = interaction.options.data;
-    let args: any = new Object;
+    let args: any = new Object();
     for (let x of argsArr) {
-      if (x.type === Discord.ApplicationCommandOptionType.String || x.type === Discord.ApplicationCommandOptionType.Integer || x.type === Discord.ApplicationCommandOptionType.Boolean) {
+      if (
+        x.type === Discord.ApplicationCommandOptionType.String ||
+        x.type === Discord.ApplicationCommandOptionType.Integer ||
+        x.type === Discord.ApplicationCommandOptionType.Boolean
+      ) {
         args[x.name] = x.value;
       } else if (x.type === Discord.ApplicationCommandOptionType.User) {
         args[x.name] = x.user;
@@ -155,4 +159,5 @@ client.on("ready", async () => {
   logger.info("Client logged in, putting commands...");
   await initCommands();
   await initListeners();
+  sql.init();
 });

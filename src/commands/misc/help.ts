@@ -12,9 +12,6 @@ export default {
   longDesc:
     "This command will either: A. give you a list of commands, or B. give you a long description of a specified command by the user. Each help text might not always be the same depending on who is hosting the bot.",
   locked: false,
-  defaultConfig(): any | null {
-    return null;
-  },
   slashBuilder(): Discord.RESTPostAPIApplicationCommandsJSONBody {
     const command = new Discord.SlashCommandBuilder()
       .setName(this.name)
@@ -39,13 +36,11 @@ export default {
       .setColor("Blue");
     if (args.command === undefined) {
       commands.forEach((command) => {
-        embed.addFields(
-          {
-            name: command.name,
-            value: command.description,
-            inline: true,
-          }
-        );
+        embed.addFields({
+          name: command.name,
+          value: command.description,
+          inline: true,
+        });
       });
     } else {
       const command = commands.get(args.command);
@@ -59,7 +54,7 @@ export default {
       }
     }
     interaction.editReply({
-      embeds: [embed]
-    })
+      embeds: [embed],
+    });
   },
 } as command["default"];

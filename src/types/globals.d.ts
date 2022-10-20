@@ -7,9 +7,14 @@ declare global {
       description: string;
       longDesc: string;
       locked: boolean;
-      defaultConfig(): any | null;
       slashBuilder(): Discord.RESTPostAPIApplicationCommandsJSONBody;
       async execute(args: Object, interaction: Discord.ChatInputCommandInteraction, ...a?:any): Promise<void>;
+    }
+  }
+  interface event {
+    default: {
+      name: string;
+      async execute(...a?:any): Promise<void>;
     }
   }
 }
