@@ -14,8 +14,9 @@ export default {
       .setDefaultMemberPermissions(Discord.PermissionFlagsBits.SendMessages);
     return command.toJSON();
   },
-  async execute(args: any, interaction: Discord.CommandInteraction) {
+  async execute(args: any, interaction: Discord.ChatInputCommandInteraction) {
     if (!interaction.guild) return;
     const db = new server(interaction.guild);
+    console.log(await db.currencies());
   },
 };

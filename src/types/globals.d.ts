@@ -8,14 +8,18 @@ declare global {
       longDesc: string;
       locked: boolean;
       slashBuilder(): Discord.RESTPostAPIApplicationCommandsJSONBody;
-      async execute(args: Object, interaction: Discord.ChatInputCommandInteraction, ...a?:any): Promise<void>;
-    }
+      execute(
+        args: Object,
+        interaction: Discord.ChatInputCommandInteraction,
+        ...a: any
+      ): Promise<void>;
+    };
   }
   interface event {
     default: {
       name: string;
-      async execute(...a?:any): Promise<void>;
-    }
+      execute(...a: any): Promise<void>;
+    };
   }
 }
 

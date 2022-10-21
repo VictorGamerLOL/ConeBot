@@ -84,4 +84,18 @@ export default {
     const result = await db.execute(query1 + query2, arr);
     console.log(result);
   },
+  getCurrencies: async (
+    guildId: string
+  ): Promise<
+    { Id: Number; CurrName: String; Symbol: String }[] | undefined
+  > => {
+    const result = (
+      await db.query(`SELECT Id, CurrName, Symbol FROM ${guildId}currencies`)
+    )[0] as { Id: Number; CurrName: String; Symbol: String }[];
+    if (result.length > 0) {
+      return result;
+    } else {
+      return undefined;
+    }
+  },
 };

@@ -84,16 +84,16 @@ const initCommands: () => Promise<void> = async () => {
       slashCommands.push(command.slashBuilder()); //Add the command to the slashCommands array
       logger.info("Registered command ", command.name);
     }
-    try {
-      logger.info(`Started reloading ${slashCommands.length} slash commands.`);
-      const data: any = await REST.put(
-        Discord.Routes.applicationCommands(CLIENTID),
-        { body: slashCommands }
-      );
-      logger.info(`Successfully reloaded ${data.length} slash commands.`);
-    } catch (error) {
-      console.error(error);
-    }
+  }
+  try {
+    logger.info(`Started reloading ${slashCommands.length} slash commands.`);
+    const data: any = await REST.put(
+      Discord.Routes.applicationCommands(CLIENTID),
+      { body: slashCommands }
+    );
+    logger.info(`Successfully reloaded ${data.length} slash commands.`);
+  } catch (error) {
+    console.error(error);
   }
 };
 
