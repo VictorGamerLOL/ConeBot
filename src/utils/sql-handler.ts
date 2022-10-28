@@ -1,19 +1,34 @@
 import db from "./sql-conn";
 import logger from "./logger";
 import { RowDataPacket } from "mysql2";
+import NodeCache from "node-cache";
+
+const cache = new NodeCache();
 
 export default {
   init: async () => {
     return;
+    //TODO: Find a reason for a server to have config files.
     // const tables = (await db.query("SHOW TABLES LIKE '%config%';"))[0] as RowDataPacket[]
     // console.log(tables)
   },
 
   findServer: async (guildId: string): Promise<boolean> => {
+    const cached: { [key: string]: boolean } | undefined = cache.get(
+      `findServer-${guildId}`
+    );
+    if (cached !== undefined) {
+      if (cached[`findServer-${guildId}`] !== false)
+        cache.ttl(`findServer-${guildId}`, 60 * 60 * 24); // refresh cache
+      return cached[`findServer-${guildId}`];
+    }
+    /*Since database reads are very computationally expensive we use RAM to store these simple booleans :).
+      If you don't like it you can cry about it. At least I think node-cache uses RAM... */
     const result = (
       await db.query(`SHOW TABLES LIKE "%${guildId}%"`)
     )[0] as RowDataPacket[];
     if (result.length > 1) {
+      cache.set(`findServer-${guildId}`, true, 60 * 60 * 60 * 24); //24 hours
       return true;
     } else {
       return false;
@@ -93,17 +108,22 @@ export default {
       currencyId,
     ]);
     await db.execute(`ALTER TABLE ${guildId}users DROP COLUMN ${CurrName};`);
+    cache.del([
+      `getCurrencies-${guildId}`,
+      `getCurrency-${guildId}-${currencyId}`,
+    ]); // Delete cache of said currency to stop unfortunate accidents :).
   },
 
-  getCurrencies: async (
-    guildId: string
-  ): Promise<
-    { Id: Number; CurrName: String; Symbol: String }[] | undefined
-  > => {
+  getCurrencies: async (guildId: string): Promise<shortCurr[] | undefined> => {
+    const cached: { [key: string]: shortCurr[] } | undefined = cache.get(
+      `getCurrencies-${guildId}`
+    );
+    if (cached !== undefined) return cached[`getCurrencies-${guildId}`];
     const result = (
       await db.query(`SELECT Id, CurrName, Symbol FROM ${guildId}currencies`)
-    )[0] as { Id: Number; CurrName: String; Symbol: String }[];
+    )[0] as { Id: number; CurrName: string; Symbol: string }[];
     if (result.length > 0) {
+      cache.set(`getCurrencies-${guildId}`, result, 120); //2 minutes
       return result;
     } else {
       return undefined;
@@ -113,24 +133,17 @@ export default {
   getCurrency: async (
     guildId: String,
     id: Number
-  ): Promise<
-    | {
-        Id: Number;
-        CurrName: String;
-        Symbol: String;
-        Visible: Boolean;
-        Base: Boolean;
-        BaseValue: Number;
-        EarnCOnfig: JSON;
-        Pay: Boolean;
-      }
-    | undefined
-  > => {
+  ): Promise<curr | undefined> => {
+    const cached: { [key: string]: curr } | undefined = cache.get(
+      `getCurrency-${guildId}-${id}`
+    );
+    if (cached !== undefined) return cached[`getCurrency-${guildId}-${id}`];
     const result = (await db.query(
       `SELECT * FROM ${guildId}currencies WHERE Id = ?`,
       [id]
     )) as RowDataPacket[];
     if (result[0][0] !== undefined) {
+      cache.set(`getCurrency-${guildId}-${id}`, result[0][0], 120); //2 minutes
       return result[0][0];
     } else {
       return undefined;
@@ -138,6 +151,7 @@ export default {
   },
 
   hasCurrency: async (guildId: String, Id: Number): Promise<boolean> => {
+    // Its dangerous to cache this so I'd rather not.
     const results = (await db.query(
       `SELECT EXISTS(SELECT Id FROM ${guildId}currencies WHERE Id = ?)`,
       [Id]

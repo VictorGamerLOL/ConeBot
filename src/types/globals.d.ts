@@ -21,6 +21,20 @@ declare global {
       execute(...a: any): Promise<void>;
     };
   }
+  interface curr {
+    Id: number;
+    CurrName: string;
+    Symbol: string;
+    Visible: boolean;
+    Base: boolean;
+    BaseValue: number | null;
+    EarnConfig: JSON;
+    Pay: boolean;
+  }
+  type shortCurr = Omit<
+    curr,
+    "Visible" | "Base" | "BaseValue" | "EarnConfig" | "Pay"
+  >;
 }
 
 export {};

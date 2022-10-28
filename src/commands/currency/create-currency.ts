@@ -64,4 +64,4 @@ export default {
       content: `Currency ${args.name} created successfully.`,
     });
   },
-};
+} as command["default"];
