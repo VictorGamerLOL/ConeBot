@@ -21,9 +21,7 @@ class server {
     }
   }
 
-  async currencies(): Promise<
-    { Id: Number; CurrName: String; Symbol: String }[] | undefined
-  > {
+  async currencies(): Promise<shortCurr[] | undefined> {
     const result = await sql.getCurrencies(this._guild.id);
     return result;
   }
@@ -33,23 +31,12 @@ class server {
     return result;
   }
 
-  async createCurrency(args: {
-    currName: string;
-    symbol: string;
-    visible?: boolean;
-    base?: boolean;
-    baseValue?: number;
-    earnConfig?: JSON;
-    pay?: boolean;
-  }): Promise<void> {
+  async createCurrency(
+    args: PartialExcept<curr, "CurrName" | "Symbol">
+  ): Promise<void> {
     await sql.createCurrency({
       guildId: this._guild.id,
-      CurrName: args.currName,
-      Symbol: args.symbol,
-      Visible: args.visible,
-      BaseValue: args.baseValue,
-      EarnConfig: args.earnConfig,
-      Pay: args.pay,
+      ...args,
     });
   }
 

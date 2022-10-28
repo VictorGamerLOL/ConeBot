@@ -60,15 +60,11 @@ export default {
     console.log(result2);
   },
 
-  createCurrency: async (args: {
-    guildId: String;
-    CurrName: String;
-    Symbol: String;
-    Visible?: Boolean;
-    BaseValue?: Number;
-    EarnConfig?: JSON;
-    Pay?: Boolean;
-  }): Promise<void> => {
+  createCurrency: async (
+    args: Omit<PartialExcept<curr, "CurrName" | "Symbol">, "Id" | "Base"> & {
+      guildId: string;
+    }
+  ): Promise<void> => {
     let query1 = `INSERT INTO ${args.guildId}currencies (CurrName, Symbol`;
     let query2 = `) VALUES (?, ?`;
     let arr: any[] = [args.CurrName, args.Symbol];

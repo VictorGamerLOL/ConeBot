@@ -54,11 +54,11 @@ export default {
     const server = new serverCl(interaction.guild as Discord.Guild);
     await server.init();
     await server.createCurrency({
-      currName: args.name,
-      symbol: args.symbol,
-      visible: args.visible,
-      baseValue: args.basevalue,
-      pay: args.pay,
+      CurrName: args.name,
+      Symbol: args.symbol,
+      Visible: args.visible,
+      BaseValue: args.basevalue,
+      Pay: args.pay,
     });
     interaction.editReply({
       content: `Currency ${args.name} created successfully.`,
