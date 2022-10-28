@@ -144,9 +144,9 @@ const initListeners: () => Promise<void> = async () => {
       }
     } catch (error) {
       logger.error(error);
-      await interaction.reply({
-        content: "There was an error while executing this command!",
-        ephemeral: true,
+      await interaction.editReply({
+        content:
+          "There was an error while executing this command! Please try again later.",
       });
     }
   });
@@ -156,6 +156,7 @@ const initListeners: () => Promise<void> = async () => {
 client.login(TOKEN);
 
 client.on("ready", async () => {
+  //Save the effort of doing anything else until the bot is ready because who knows if you can even log in (school network moment).
   logger.info("Client logged in, putting commands...");
   await initCommands();
   await initListeners();

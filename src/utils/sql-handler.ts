@@ -8,6 +8,7 @@ export default {
     // const tables = (await db.query("SHOW TABLES LIKE '%config%';"))[0] as RowDataPacket[]
     // console.log(tables)
   },
+
   findServer: async (guildId: string): Promise<boolean> => {
     const result = (
       await db.query(`SHOW TABLES LIKE "%${guildId}%"`)
@@ -18,6 +19,7 @@ export default {
       return false;
     }
   },
+
   createServer: async (guildId: string): Promise<void> => {
     const result1 = await db.execute(
       `CREATE TABLE IF NOT EXISTS ${guildId}users (
@@ -42,12 +44,12 @@ export default {
     console.log(result1);
     console.log(result2);
   },
+
   createCurrency: async (args: {
     guildId: String;
     CurrName: String;
     Symbol: String;
     Visible?: Boolean;
-    Base?: Boolean;
     BaseValue?: Number;
     EarnConfig?: JSON;
     Pay?: Boolean;
@@ -59,11 +61,6 @@ export default {
       query1 += ", Visible";
       query2 += ", ?";
       arr.push(args.Visible);
-    }
-    if (args.Base !== undefined) {
-      query1 += ", Base";
-      query2 += ", ?";
-      arr.push(args.Base);
     }
     if (args.BaseValue !== undefined) {
       query1 += ", BaseValue";
@@ -81,9 +78,23 @@ export default {
       arr.push(args.Pay);
     }
     query2 += ")";
-    const result = await db.execute(query1 + query2, arr);
-    console.log(result);
+    await db.execute(query1 + query2, arr);
+    await db.execute(
+      `ALTER TABLE ${args.guildId}users ADD COLUMN ${args.CurrName} int NOT NULL DEFAULT 0;`
+    );
   },
+
+  deleteCurrency: async (
+    guildId: String,
+    currencyId: Number,
+    CurrName: String
+  ): Promise<void> => {
+    await db.execute(`DELETE FROM ${guildId}currencies WHERE Id = ?`, [
+      currencyId,
+    ]);
+    await db.execute(`ALTER TABLE ${guildId}users DROP COLUMN ${CurrName};`);
+  },
+
   getCurrencies: async (
     guildId: string
   ): Promise<
@@ -97,5 +108,47 @@ export default {
     } else {
       return undefined;
     }
+  },
+
+  getCurrency: async (
+    guildId: String,
+    id: Number
+  ): Promise<
+    | {
+        Id: Number;
+        CurrName: String;
+        Symbol: String;
+        Visible: Boolean;
+        Base: Boolean;
+        BaseValue: Number;
+        EarnCOnfig: JSON;
+        Pay: Boolean;
+      }
+    | undefined
+  > => {
+    const result = (await db.query(
+      `SELECT * FROM ${guildId}currencies WHERE Id = ?`,
+      [id]
+    )) as RowDataPacket[];
+    if (result[0][0] !== undefined) {
+      return result[0][0];
+    } else {
+      return undefined;
+    }
+  },
+
+  hasCurrency: async (guildId: String, Id: Number): Promise<boolean> => {
+    const results = (await db.query(
+      `SELECT EXISTS(SELECT Id FROM ${guildId}currencies WHERE Id = ?)`,
+      [Id]
+    )) as RowDataPacket[];
+    for (const key in results[0][0]) {
+      if (results[0][0][key] === 1) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+    return false;
   },
 };

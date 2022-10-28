@@ -20,7 +20,6 @@ class currency {
         CurrName: args.currName,
         Symbol: args.symbol,
         Visible: args.visible,
-        Base: args.base,
         BaseValue: args.baseValue,
         EarnConfig: args.earnConfig,
         Pay: args.pay,

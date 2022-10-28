@@ -18,6 +18,7 @@ export default {
   },
   async execute(args, interaction) {
     const server = new serverCl(interaction.guild as Discord.Guild);
+    await server.init();
     const currencies = await server.currencies();
     if (currencies === undefined)
       return interaction.editReply({
@@ -29,8 +30,8 @@ export default {
       .setColor("DarkGreen");
     for (const currency of currencies) {
       embed.addFields({
-        name: `ID: ${currency.Id}, Name: ${currency.CurrName}`,
-        value: `Symbol: ${currency.Symbol}`,
+        name: `${currency.Symbol} - ${currency.CurrName}`,
+        value: `ID: ${currency.Id}`,
         inline: true,
       });
     }
