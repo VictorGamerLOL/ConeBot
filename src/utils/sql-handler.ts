@@ -14,13 +14,11 @@ export default {
   },
 
   findServer: async (guildId: string): Promise<boolean> => {
-    const cached: { [key: string]: boolean } | undefined = cache.get(
-      `findServer-${guildId}`
-    );
+    const cached: boolean | undefined = cache.get(`findServer-${guildId}`);
     if (cached !== undefined) {
-      if (cached[`findServer-${guildId}`] !== false)
-        cache.ttl(`findServer-${guildId}`, 60 * 60 * 24); // refresh cache
-      return cached[`findServer-${guildId}`];
+      if (cached !== false)
+        cache.ttl(`findServer-${guildId}`, 60 * 60 * 60 * 24); // refresh cache
+      return cached;
     }
     /*Since database reads are very computationally expensive we use RAM to store these simple booleans :).
       If you don't like it you can cry about it. At least I think node-cache uses RAM... */
@@ -61,7 +59,10 @@ export default {
   },
 
   createCurrency: async (
-    args: Omit<PartialExcept<curr, "CurrName" | "Symbol">, "Id" | "Base"> & {
+    args: Omit<
+      PartialExcept<curr, "CurrName" | "Symbol">,
+      "Id" | "Base" | "EarnConfig"
+    > & {
       guildId: string;
     }
   ): Promise<void> => {
@@ -77,11 +78,6 @@ export default {
       query1 += ", BaseValue";
       query2 += ", ?";
       arr.push(args.BaseValue);
-    }
-    if (args.EarnConfig !== undefined) {
-      query1 += ", EarnConfig";
-      query2 += ", ?";
-      arr.push(args.EarnConfig);
     }
     if (args.Pay !== undefined) {
       query1 += ", Pay";
@@ -111,10 +107,10 @@ export default {
   },
 
   getCurrencies: async (guildId: string): Promise<shortCurr[] | undefined> => {
-    const cached: { [key: string]: shortCurr[] } | undefined = cache.get(
+    const cached: shortCurr[] | undefined = cache.get(
       `getCurrencies-${guildId}`
     );
-    if (cached !== undefined) return cached[`getCurrencies-${guildId}`];
+    if (cached !== undefined) return cached;
     const result = (
       await db.query(`SELECT Id, CurrName, Symbol FROM ${guildId}currencies`)
     )[0] as { Id: number; CurrName: string; Symbol: string }[];
@@ -130,10 +126,8 @@ export default {
     guildId: String,
     id: Number
   ): Promise<curr | undefined> => {
-    const cached: { [key: string]: curr } | undefined = cache.get(
-      `getCurrency-${guildId}-${id}`
-    );
-    if (cached !== undefined) return cached[`getCurrency-${guildId}-${id}`];
+    const cached: curr | undefined = cache.get(`getCurrency-${guildId}-${id}`);
+    if (cached !== undefined) return cached;
     const result = (await db.query(
       `SELECT * FROM ${guildId}currencies WHERE Id = ?`,
       [id]

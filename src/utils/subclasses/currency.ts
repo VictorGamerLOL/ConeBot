@@ -21,7 +21,6 @@ class currency {
         Symbol: args.symbol,
         Visible: args.visible,
         BaseValue: args.baseValue,
-        EarnConfig: args.earnConfig,
         Pay: args.pay,
       });
     }

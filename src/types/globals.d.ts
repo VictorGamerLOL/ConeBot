@@ -1,6 +1,7 @@
 import Discord from "discord.js";
 
 declare global {
+  // Some additional utility types
   type PickPartial<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
   type PartialExcept<T, K extends keyof T> = Pick<T, K> & Partial<Omit<T, K>>;
 

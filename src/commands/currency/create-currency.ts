@@ -58,7 +58,7 @@ export default {
       Symbol: args.symbol,
       Visible: args.visible,
       BaseValue: args.basevalue,
-      Pay: args.pay,
+      Pay: args.pay, //Unfortunately command options need to be lowercase, so we need to do this kind of thing.
     });
     interaction.editReply({
       content: `Currency ${args.name} created successfully.`,

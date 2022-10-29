@@ -32,7 +32,10 @@ class server {
   }
 
   async createCurrency(
-    args: PartialExcept<curr, "CurrName" | "Symbol">
+    args: Omit<
+      PartialExcept<curr, "CurrName" | "Symbol">,
+      "Id" | "Base" | "EarnConfig"
+    >
   ): Promise<void> {
     await sql.createCurrency({
       guildId: this._guild.id,
