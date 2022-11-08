@@ -1,4 +1,10 @@
-import * as Discord from "discord.js";
+import {
+  RESTPostAPIApplicationCommandsJSONBody,
+  SlashCommandBuilder,
+  PermissionFlagsBits,
+  ChatInputCommandInteraction,
+  Guild,
+} from "discord.js";
 import serverCl from "../../utils/bot-db";
 
 export default {
@@ -7,8 +13,8 @@ export default {
   longDesc:
     "Deletes a currency from this server, given its id. This action cannot be undone.",
   locked: false,
-  slashBuilder(): Discord.RESTPostAPIApplicationCommandsJSONBody {
-    const command = new Discord.SlashCommandBuilder()
+  slashBuilder(): RESTPostAPIApplicationCommandsJSONBody {
+    const command = new SlashCommandBuilder()
       .setName(this.name)
       .setDescription(this.description)
       .addIntegerOption((option) =>
@@ -18,11 +24,11 @@ export default {
           .setRequired(true)
       )
       .setDMPermission(false)
-      .setDefaultMemberPermissions(Discord.PermissionFlagsBits.ManageGuild);
+      .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild);
     return command.toJSON();
   },
-  async execute(args: any, interaction: Discord.ChatInputCommandInteraction) {
-    const server = new serverCl(interaction.guild as Discord.Guild);
+  async execute(args: any, interaction: ChatInputCommandInteraction) {
+    const server = new serverCl(interaction.guild as Guild);
     await server.init();
     if (await server.hasCurrency(args.id)) {
       await server.deleteCurrency(args.id);

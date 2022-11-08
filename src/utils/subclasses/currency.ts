@@ -1,10 +1,10 @@
-import Discord from "discord.js";
+import { Guild } from "discord.js";
 import sql from "../sql-handler";
 
 class currency {
-  private _guild: Discord.Guild;
+  private _guild: Guild;
   constructor(args: {
-    guild: Discord.Guild;
+    guild: Guild;
     currName: string;
     symbol: string;
     visible?: boolean;

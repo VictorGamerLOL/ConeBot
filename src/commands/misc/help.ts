@@ -1,9 +1,11 @@
 import {
-  CommandInteraction,
-  PermissionFlagsBits,
+  RESTPostAPIApplicationCommandsJSONBody,
   SlashCommandBuilder,
+  CommandInteraction,
+  Collection,
+  EmbedBuilder,
+  PermissionFlagsBits,
 } from "discord.js";
-import Discord from "discord.js";
 
 export default {
   name: "help",
@@ -12,8 +14,8 @@ export default {
   longDesc:
     "This command will either: A. give you a list of commands, or B. give you a long description of a specified command by the user. Each help text might not always be the same depending on who is hosting the bot.",
   locked: false,
-  slashBuilder(): Discord.RESTPostAPIApplicationCommandsJSONBody {
-    const command = new Discord.SlashCommandBuilder()
+  slashBuilder(): RESTPostAPIApplicationCommandsJSONBody {
+    const command = new SlashCommandBuilder()
       .setName(this.name)
       .setDescription(this.description)
       .setDMPermission(false)
@@ -28,10 +30,10 @@ export default {
   },
   async execute(
     args: any,
-    interaction: Discord.CommandInteraction,
-    commands: Discord.Collection<string, command["default"]>
+    interaction: CommandInteraction,
+    commands: Collection<string, command["default"]>
   ) {
-    const embed = new Discord.EmbedBuilder()
+    const embed = new EmbedBuilder()
       .setTitle("Commands available:")
       .setColor("Blue");
     if (args.command === undefined) {

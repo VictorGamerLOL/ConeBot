@@ -4,13 +4,13 @@
  * This is also so I can say I used classes in case this ends up being used as my school project.
  *
  */
-import Discord from "discord.js";
+import { Guild } from "discord.js";
 import sql from "./sql-handler";
 
 class server {
-  private _guild: Discord.Guild;
+  private _guild: Guild;
 
-  constructor(guild: Discord.Guild) {
+  constructor(guild: Guild) {
     this._guild = guild;
   }
 

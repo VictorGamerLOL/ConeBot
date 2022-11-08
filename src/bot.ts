@@ -9,9 +9,21 @@ import * as dotenv from "dotenv";
 dotenv.config();
 import logger from "./utils/logger";
 import sql from "./utils/sql-handler";
-import Discord from "discord.js";
+import {
+  ActivityType,
+  ApplicationCommandOptionType,
+  Client,
+  Collection,
+  GatewayIntentBits,
+  IntentsBitField,
+  Partials,
+  PresenceData,
+  REST,
+  RESTPostAPIApplicationCommandsJSONBody,
+  Routes,
+} from "discord.js";
 import db from "./utils/bot-db";
-const REST = new Discord.REST({ version: "10" });
+const RESTapi = new REST({ version: "10" });
 const TOKEN = process.env.TOKEN;
 let defaultPrefix = process.env.PREFIX;
 const CLIENTID = process.env.CLIENTID;
@@ -28,50 +40,49 @@ if (!defaultPrefix) {
   defaultPrefix = "cn!";
 }
 
-REST.setToken(TOKEN);
+RESTapi.setToken(TOKEN);
 
-const intents: Discord.GatewayIntentBits[] = [
-  Discord.IntentsBitField.Flags.GuildMessages,
-  Discord.IntentsBitField.Flags.GuildMembers,
-  Discord.IntentsBitField.Flags.Guilds,
-  Discord.IntentsBitField.Flags.GuildBans,
-  Discord.IntentsBitField.Flags.GuildInvites,
-  Discord.IntentsBitField.Flags.GuildMessageReactions,
+const intents: GatewayIntentBits[] = [
+  IntentsBitField.Flags.GuildMessages,
+  IntentsBitField.Flags.GuildMembers,
+  IntentsBitField.Flags.Guilds,
+  IntentsBitField.Flags.GuildBans,
+  IntentsBitField.Flags.GuildInvites,
+  IntentsBitField.Flags.GuildMessageReactions,
 ]; //Here we tell discord what data we want from it.
 
-const partials: Discord.Partials[] = [
-  Discord.Partials.GuildMember,
-  Discord.Partials.Reaction,
-  Discord.Partials.Message,
-  Discord.Partials.User,
-  Discord.Partials.Channel,
-  Discord.Partials.ThreadMember,
-  Discord.Partials.GuildScheduledEvent,
+const partials: Partials[] = [
+  Partials.GuildMember,
+  Partials.Reaction,
+  Partials.Message,
+  Partials.User,
+  Partials.Channel,
+  Partials.ThreadMember,
+  Partials.GuildScheduledEvent,
 ]; //Can't be bothered to run into missing events because they do not have all the data, so we make everything partial :)
 
-const presenceData: Discord.PresenceData = {
+const presenceData: PresenceData = {
   status: "online",
   activities: [
     {
       name: "your money", //Basically the presence the bot will have.
-      type: Discord.ActivityType.Watching,
+      type: ActivityType.Watching,
     },
   ],
 };
 
-const client = new Discord.Client({
+const client = new Client({
   intents: intents,
   partials: partials,
   presence: presenceData,
 });
 
-let commands: Discord.Collection<string, command["default"]> =
-  new Discord.Collection(); //Embed the commands directly in the client object
+let commands: Collection<string, command["default"]> = new Collection(); //Embed the commands directly in the client object
 
 const initCommands: () => Promise<void> = async () => {
   //Load all commands amd make a REST request for them.
   const commandFolders = fs.readdirSync(path.join(__dirname, "./commands")); //__dirname represents the directory in which this file is in, so we do not need to specify "./scr/commands"
-  const slashCommands: Discord.RESTPostAPIApplicationCommandsJSONBody[] = [];
+  const slashCommands: RESTPostAPIApplicationCommandsJSONBody[] = [];
   for (const folder of commandFolders) {
     const commandFiles = fs
       .readdirSync(path.join(__dirname, `./commands/${folder}`))
@@ -87,10 +98,9 @@ const initCommands: () => Promise<void> = async () => {
   }
   try {
     logger.info(`Started reloading ${slashCommands.length} slash commands.`);
-    const data: any = await REST.put(
-      Discord.Routes.applicationCommands(CLIENTID),
-      { body: slashCommands }
-    );
+    const data: any = await RESTapi.put(Routes.applicationCommands(CLIENTID), {
+      body: slashCommands,
+    });
     logger.info(`Successfully reloaded ${data.length} slash commands.`);
   } catch (error) {
     console.error(error);
@@ -109,18 +119,18 @@ const initListeners: () => Promise<void> = async () => {
     let args: any = new Object();
     for (let x of argsArr) {
       if (
-        x.type === Discord.ApplicationCommandOptionType.String ||
-        x.type === Discord.ApplicationCommandOptionType.Integer ||
-        x.type === Discord.ApplicationCommandOptionType.Boolean
+        x.type === ApplicationCommandOptionType.String ||
+        x.type === ApplicationCommandOptionType.Integer ||
+        x.type === ApplicationCommandOptionType.Boolean
       ) {
         args[x.name] = x.value;
-      } else if (x.type === Discord.ApplicationCommandOptionType.User) {
+      } else if (x.type === ApplicationCommandOptionType.User) {
         args[x.name] = x.user;
-      } else if (x.type === Discord.ApplicationCommandOptionType.Channel) {
+      } else if (x.type === ApplicationCommandOptionType.Channel) {
         args[x.name] = x.channel;
-      } else if (x.type === Discord.ApplicationCommandOptionType.Role) {
+      } else if (x.type === ApplicationCommandOptionType.Role) {
         args[x.name] = x.role;
-      } else if (x.type === Discord.ApplicationCommandOptionType.Attachment) {
+      } else if (x.type === ApplicationCommandOptionType.Attachment) {
         args[x.name] = x.attachment;
       } else {
         args[x.name] = x.value;

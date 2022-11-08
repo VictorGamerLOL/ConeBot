@@ -1,4 +1,10 @@
-import * as Discord from "discord.js";
+import {
+  RESTPostAPIApplicationCommandsJSONBody,
+  SlashCommandBuilder,
+  PermissionFlagsBits,
+  Guild,
+  EmbedBuilder,
+} from "discord.js";
 import serverCl from "../../utils/bot-db";
 //More imports here
 
@@ -8,23 +14,23 @@ export default {
   longDesc:
     "Lists the id, name and symbol of all currencies available on this server.",
   locked: false,
-  slashBuilder(): Discord.RESTPostAPIApplicationCommandsJSONBody {
-    const command = new Discord.SlashCommandBuilder()
+  slashBuilder(): RESTPostAPIApplicationCommandsJSONBody {
+    const command = new SlashCommandBuilder()
       .setName(this.name)
       .setDescription(this.description)
       .setDMPermission(false)
-      .setDefaultMemberPermissions(Discord.PermissionFlagsBits.SendMessages);
+      .setDefaultMemberPermissions(PermissionFlagsBits.SendMessages);
     return command.toJSON();
   },
   async execute(args, interaction) {
-    const server = new serverCl(interaction.guild as Discord.Guild);
+    const server = new serverCl(interaction.guild as Guild);
     await server.init();
     const currencies = await server.currencies();
     if (currencies === undefined)
       return interaction.editReply({
         content: "There are no currencies on this server.",
       });
-    const embed = new Discord.EmbedBuilder()
+    const embed = new EmbedBuilder()
       .setTitle("Currencies")
       .setDescription("Here are all of the currencies on this server:")
       .setColor("DarkGreen");

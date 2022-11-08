@@ -1,4 +1,10 @@
-import * as Discord from "discord.js";
+import {
+  RESTPostAPIApplicationCommandsJSONBody,
+  SlashCommandBuilder,
+  PermissionFlagsBits,
+  ChatInputCommandInteraction,
+  Guild,
+} from "discord.js";
 import serverCl from "../../utils/bot-db";
 
 export default {
@@ -8,8 +14,8 @@ export default {
     "Creates a currency on this server using the given arguments as settings. Some arguments are optional and will be set to their defaults if they are not provided.\
     Defaults include:\nVisible: true\nBaseValue: null\nEarnConfig: N/A\nEnabled: true\nPay: true",
   locked: false,
-  slashBuilder(): Discord.RESTPostAPIApplicationCommandsJSONBody {
-    const command = new Discord.SlashCommandBuilder()
+  slashBuilder(): RESTPostAPIApplicationCommandsJSONBody {
+    const command = new SlashCommandBuilder()
       .setName(this.name)
       .setDescription(this.description)
       .addStringOption((option) =>
@@ -47,11 +53,11 @@ export default {
           .setRequired(false)
       )
       .setDMPermission(false)
-      .setDefaultMemberPermissions(Discord.PermissionFlagsBits.ManageGuild);
+      .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild);
     return command.toJSON();
   },
-  async execute(args: any, interaction: Discord.ChatInputCommandInteraction) {
-    const server = new serverCl(interaction.guild as Discord.Guild);
+  async execute(args: any, interaction: ChatInputCommandInteraction) {
+    const server = new serverCl(interaction.guild as Guild);
     await server.init();
     await server.createCurrency({
       CurrName: args.name,
