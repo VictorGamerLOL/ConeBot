@@ -38,11 +38,11 @@ const pool: mysql.Pool = mysql.createPool({
 pool
   .getConnection()
   .then((conn) => {
-    logger.info("Connected to database");
+    logger.info("DB: Connected to database");
     conn.release();
   })
   .catch((err) => {
-    logger.error(err);
+    logger.error("DB: " + err);
   });
 
 export default pool as mysql.Pool;

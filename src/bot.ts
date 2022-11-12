@@ -80,6 +80,7 @@ const client = new Client({
 let commands: Collection<string, command["default"]> = new Collection(); //Embed the commands directly in the client object
 
 const initCommands: () => Promise<void> = async () => {
+  logger.info("COMMANDS: initializing commands");
   //Load all commands amd make a REST request for them.
   const commandFolders = fs.readdirSync(path.join(__dirname, "./commands")); //__dirname represents the directory in which this file is in, so we do not need to specify "./scr/commands"
   const slashCommands: RESTPostAPIApplicationCommandsJSONBody[] = [];
@@ -93,15 +94,19 @@ const initCommands: () => Promise<void> = async () => {
       ); //Import the file
       commands.set(command.name, command); //Add the command to the collection
       slashCommands.push(command.slashBuilder()); //Add the command to the slashCommands array
-      logger.info("Registered command ", command.name);
+      logger.info("COMMANDS: Registered command ", command.name);
     }
   }
   try {
-    logger.info(`Started reloading ${slashCommands.length} slash commands.`);
+    logger.info(
+      `COMMANDS: Started reloading ${slashCommands.length} slash commands.`
+    );
     const data: any = await RESTapi.put(Routes.applicationCommands(CLIENTID), {
       body: slashCommands,
     });
-    logger.info(`Successfully reloaded ${data.length} slash commands.`);
+    logger.info(
+      `COMMANDS: Successfully reloaded ${data.length} slash commands.`
+    );
   } catch (error) {
     console.error(error);
   }
@@ -109,7 +114,7 @@ const initCommands: () => Promise<void> = async () => {
 
 const initListeners: () => Promise<void> = async () => {
   //We load all of the listeners here, including the one for slash commands and events (to be made later).
-  logger.info("Starting listening for commands...");
+  logger.info("LISTENERS: Starting listening for commands...");
   client.on("interactionCreate", async (interaction) => {
     if (!interaction.isCommand()) return;
     if (!interaction.isChatInputCommand()) return; //Remove this when adding context menu commands.
@@ -153,22 +158,20 @@ const initListeners: () => Promise<void> = async () => {
         );
       }
     } catch (error) {
-      logger.error(error);
+      logger.error("LISTENERS:" + error);
       await interaction.editReply({
         content:
           "There was an error while executing this command! Please try again later.",
       });
     }
   });
-  logger.info("Listening for commands...");
+  logger.info("LISTENERS: Listening for commands...");
 };
 
 client.login(TOKEN);
-
-client.on("ready", async () => {
-  //Save the effort of doing anything else until the bot is ready because who knows if you can even log in (school network moment).
-  logger.info("Client logged in, putting commands...");
-  await initCommands();
-  await initListeners();
+initCommands();
+initListeners();
+client.once("ready", async () => {
+  logger.info("CLIENT: Ready!");
   sql.init();
 });

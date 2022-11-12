@@ -2,6 +2,7 @@ import db from "./sql-conn";
 import logger from "./logger";
 import { RowDataPacket } from "mysql2";
 import NodeCache from "node-cache";
+import { GuildMember } from "discord.js";
 
 const cache = new NodeCache();
 
@@ -54,8 +55,6 @@ export default {
         PRIMARY KEY (Id)
         );`
     );
-    console.log(result1);
-    console.log(result2);
   },
 
   createCurrency: async (
@@ -89,6 +88,18 @@ export default {
     await db.execute(
       `ALTER TABLE ${args.guildId}users ADD COLUMN ${args.CurrName} int NOT NULL DEFAULT 0;`
     );
+  },
+
+  createMember: async (memberId: String, serverId: String): Promise<void> => {
+    const cached: Boolean | undefined = cache.get(
+      `createMember-${memberId}-${serverId}`
+    );
+    if (cached !== undefined) return;
+    await db.execute(
+      `INSERT OR IGNORE INTO ${serverId}users (Id) VALUES (?);`, //This doubles down as a check if member exists and if not creates them.
+      [memberId]
+    );
+    cache.set(`createMember-${memberId}-${serverId}`, true, 60 * 60 * 60 * 24); //24 hours because any database operation is expensive.
   },
 
   deleteCurrency: async (

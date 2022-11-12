@@ -4,8 +4,9 @@
  * This is also so I can say I used classes in case this ends up being used as my school project.
  *
  */
-import { Guild } from "discord.js";
+import { Guild, GuildMember } from "discord.js";
 import sql from "./sql-handler";
+import member from "./subclasses/member";
 
 class server {
   private _guild: Guild;
@@ -48,6 +49,12 @@ class server {
     if (currency !== undefined) {
       await sql.deleteCurrency(this._guild.id, currencyId, currency.CurrName);
     }
+  }
+
+  async member(guildMember: GuildMember): Promise<member> {
+    const result = new member({ guildMember, serverClParam: this });
+    await result.init();
+    return result;
   }
 }
 export default server;
