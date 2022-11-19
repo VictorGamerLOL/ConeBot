@@ -1,7 +1,12 @@
 {
   "name": "Node.js & TypeScript",
-  "image": "archlinux:latest"
-
+  "build": {
+    "dockerfile": "dockerfile",
+    "args": {
+      "INSTALL_NODE": "true",
+      "USERNAME": "victorgamerlol"
+    }
+  }
   // Features to add to the dev container. More info: https://containers.dev/features.
   // "features": {},
 
