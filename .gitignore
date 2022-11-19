@@ -107,3 +107,6 @@ test.js
 
 # The name of the secrets file on my machine so it does not get pushed to git
 secretss.json
+
+# Test file I use
+src/utils/test.ts
