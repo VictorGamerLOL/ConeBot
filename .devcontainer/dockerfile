@@ -15,8 +15,9 @@ ARG USERNAME="archie"
 ARG INSTALL_NODE="false"
 ARG INSTALL_ZSH="true"
 
-# Install node if needed
+# Install node and npm if needed
 RUN if [ "$INSTALL_NODE" = "true" ]; then pacman -S --noconfirm nodejs; fi
+RUN if [ "$INSTALL_NODE" = "true" ]; then pacman -S --noconfirm npm; fi
 
 # Create wheel group and add it to the sudoers file
 RUN echo "%wheel ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
