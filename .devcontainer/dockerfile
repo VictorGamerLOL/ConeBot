@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile-upstream:master-labs
 FROM archlinux:latest
 RUN pacman -Syyu --noconfirm && pacman -S --noconfirm git openssh sudo
 ARG USERNAME="archie"
@@ -14,7 +15,7 @@ RUN echo "%wheel ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 RUN useradd -m -s /bin/bash -G wheel $USERNAME
 
 # Add my dotfiles repo to $USERNAME's home directory
-ADD --chown=$USERNAME "https://github.com/VictorGamerLOL/dotfiles.git" /home/$USERNAME
+ADD --chown=$USERNAME https://github.com/VictorGamerLOL/dotfiles.git /home/$USERNAME
 
 # Add zsh if needed
 RUN if [ "$INSTALL_ZSH" = "true" ]; then pacman -S --noconfirm zsh; fi
