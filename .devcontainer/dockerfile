@@ -14,8 +14,9 @@ RUN echo "%wheel ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 RUN useradd -m -s /bin/bash -G wheel $USERNAME
 
 # Add my dotfiles repo to $USERNAME's home directory
-RUN git clone "https://github.com/VictorGamerLOL/dotfiles" /home/$USERNAME/dotfiles
+RUN git clone --recurse-submodules "https://github.com/VictorGamerLOL/dotfiles" /home/$USERNAME/dotfiles
+RUN mv -f /home/$USERNAME/dotfiles/{.,}* /home/$USERNAME; exit 0
 
 # Add zsh if needed
-RUN if [ "$INSTALL_ZSH" = "true" ]; then pacman -S --noconfirm zsh; fi
+RUN if [ "$INSTALL_ZSH" = "true" ]; then pacman -S --noconfirm zsh starship; fi
 RUN if [ "$INSTALL_ZSH" = "true" ]; then chsh -s /bin/zsh $USERNAME; fi
