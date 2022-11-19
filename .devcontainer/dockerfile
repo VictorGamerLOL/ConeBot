@@ -8,7 +8,7 @@ ARG INSTALL_ZSH="true"
 RUN if [ "$INSTALL_NODE" = "true" ]; then pacman -S --noconfirm nodejs; fi
 
 # Create wheel group and add it to the sudoers file
-RUN groupadd -r wheel && echo "%wheel ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+RUN echo "%wheel ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 # Add the user, give it a home directory and add it to the wheel group
 RUN useradd -m -s /bin/bash -G wheel $USERNAME
