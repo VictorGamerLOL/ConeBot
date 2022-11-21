@@ -26,13 +26,13 @@ declare global {
     };
   }
   interface curr {
-    Id: number;
+    Id?: number;
     CurrName: string;
     Symbol: string;
     Visible: boolean;
     Base: boolean;
     BaseValue: number | null;
-    EarnConfig: JSON;
+    EarnConfig: any;
     Pay: boolean;
   }
   type shortCurr = Omit<

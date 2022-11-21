@@ -37,7 +37,7 @@ export default {
     for (const currency of currencies) {
       embed.addFields({
         name: `${currency.Symbol} - ${currency.CurrName}`,
-        value: `ID: ${currency.Id}`,
+        value: currency.Id === undefined ? `Id: ${currency.Id}` : "​",
         inline: true,
       });
     }
