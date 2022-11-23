@@ -5,7 +5,7 @@
  *
  */
 import { Guild, GuildMember } from "discord.js";
-import sql from "./sql-handler";
+import db from "./db-handler";
 import member from "./subclasses/member";
 
 class server {
@@ -16,19 +16,19 @@ class server {
   }
 
   async init(): Promise<void> {
-    const result = await sql.findServer(this._guild.id);
+    const result = await db.findServer(this._guild.id);
     if (result === false) {
-      await sql.createServer(this._guild.id);
+      await db.createServer(this._guild.id);
     }
   }
 
   async currencies(): Promise<shortCurr[] | undefined> {
-    const result = await sql.getCurrencies(this._guild.id);
+    const result = await db.getCurrencies(this._guild.id);
     return result;
   }
 
-  async hasCurrency(Id: Number): Promise<boolean> {
-    const result = await sql.hasCurrency(this._guild.id, Id);
+  async hasCurrency(currencyName: string): Promise<boolean> {
+    const result = await db.hasCurrency(this._guild.id, currencyName);
     return result;
   }
 
@@ -38,17 +38,14 @@ class server {
       "Id" | "Base" | "EarnConfig"
     >
   ): Promise<void> {
-    await sql.createCurrency({
+    await db.createCurrency({
       guildId: this._guild.id,
       ...args,
     });
   }
 
-  async deleteCurrency(currencyId: Number): Promise<void> {
-    const currency = await sql.getCurrency(this._guild.id, currencyId);
-    if (currency !== undefined) {
-      await sql.deleteCurrency(this._guild.id, currencyId, currency.CurrName);
-    }
+  async deleteCurrency(currencyName: string): Promise<void> {
+    await db.deleteCurrency(this._guild.id, currencyName);
   }
 
   async member(guildMember: GuildMember): Promise<member> {

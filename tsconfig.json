@@ -11,7 +11,7 @@
       // but *only* in ts-node.  Useful if you want ts-node and tsc to use
       // different options with a single tsconfig.json.
       "module": "Node16",
-      "target": "ES6",
+      "target": "ES2022",
       "noImplicitAny": true,
       "removeComments": true,
       "preserveConstEnums": true,

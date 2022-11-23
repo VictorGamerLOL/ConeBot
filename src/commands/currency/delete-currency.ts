@@ -17,10 +17,10 @@ export default {
     const command = new SlashCommandBuilder()
       .setName(this.name)
       .setDescription(this.description)
-      .addIntegerOption((option) =>
+      .addStringOption((option) =>
         option
-          .setName("id")
-          .setDescription("The id of the currency to delete.")
+          .setName("name")
+          .setDescription("The name of the currency to delete.")
           .setRequired(true)
       )
       .setDMPermission(false)
@@ -33,11 +33,11 @@ export default {
     if (await server.hasCurrency(args.id)) {
       await server.deleteCurrency(args.id);
       interaction.editReply({
-        content: `Successfully deleted currency with id ${args.id}.`,
+        content: `Successfully deleted currency with id ${args.name}.`,
       });
     } else {
       interaction.editReply({
-        content: `There is no currency with id ${args.id} on this server.`,
+        content: `There is no currency with id ${args.name} on this server.`,
       });
     }
   },

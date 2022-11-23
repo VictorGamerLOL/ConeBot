@@ -1,5 +1,5 @@
 import { GuildMember } from "discord.js";
-import sql from "../sql-handler";
+import sql from "../db-handler";
 import serverCl from "../bot-db";
 
 class member {

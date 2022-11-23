@@ -8,7 +8,7 @@ import fs from "fs";
 import * as dotenv from "dotenv";
 dotenv.config();
 import logger from "./utils/logger";
-import sql from "./utils/sql-handler";
+import sql from "./utils/db-handler";
 import {
   ActivityType,
   ApplicationCommandOptionType,

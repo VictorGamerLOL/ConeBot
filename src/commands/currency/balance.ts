@@ -27,15 +27,9 @@ export default {
           .setDescription("The member to check the balance of.")
           .setRequired(false)
       )
-      .addIntegerOption((option) =>
-        option
-          .setName("currencyId")
-          .setDescription("The currency ID to check the balance of.")
-          .setRequired(false)
-      )
       .addStringOption((option) =>
         option
-          .setName("currencyName")
+          .setName("currency-name")
           .setDescription("The currency name to check the balance of.")
           .setRequired(false)
       )

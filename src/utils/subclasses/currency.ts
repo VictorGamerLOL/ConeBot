@@ -1,5 +1,5 @@
 import { Guild } from "discord.js";
-import sql from "../sql-handler";
+import db from "../db-handler";
 
 class currency {
   private _guild: Guild;
@@ -15,7 +15,7 @@ class currency {
   }) {
     this._guild = args.guild;
     if (args.currName !== undefined && args.symbol !== undefined) {
-      sql.createCurrency({
+      db.createCurrency({
         guildId: this._guild.id,
         CurrName: args.currName,
         Symbol: args.symbol,

@@ -23,9 +23,7 @@ export default {
   init: async () => {
     const collections = await db.collections();
     const foundCollection = collections.find((collection) => {
-      console.log(collection);
       if (collection.collectionName === "servers") {
-        console.log("Found collection");
         return true;
       } else return false;
     });
@@ -45,13 +43,18 @@ export default {
         },
       }
     );
-    return false;
+    return result === null ? false : true;
   },
   createServer: async (guildId: string): Promise<void> => {
     db.collection("servers").updateOne(
       { guildId: guildId },
       {
-        $set: { guildId: guildId, currencies: [], members: [], earnConfig: {} },
+        $setOnInsert: {
+          guildId: guildId,
+          currencies: [],
+          members: [],
+          earnConfig: {},
+        },
       },
       { upsert: true }
     );
@@ -96,7 +99,8 @@ export default {
         { projection: { "currencies.CurrName": 1, "currencies.Symbol": 1 } }
       );
     if (result === null) {
-      (this as any).createServer(guildId); //Workaround for this being undefined
+      let thisFile = await import("./db-handler");
+      await thisFile.default.createServer(guildId);
       return undefined;
     }
     return result.currencies.length !== 0 ? result.currencies : undefined;
