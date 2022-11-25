@@ -59,6 +59,13 @@ export default {
   async execute(args: any, interaction: ChatInputCommandInteraction) {
     const server = new serverCl(interaction.guild as Guild);
     await server.init();
+    const exists = await server.hasCurrency(args.name);
+    if (exists) {
+      interaction.editReply({
+        content: `There is already a currency with the name of ${args.name} on this server.`,
+      });
+      return;
+    }
     await server.createCurrency({
       CurrName: args.name,
       Symbol: args.symbol,
