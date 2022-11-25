@@ -30,14 +30,14 @@ export default {
   async execute(args: any, interaction: ChatInputCommandInteraction) {
     const server = new serverCl(interaction.guild as Guild);
     await server.init();
-    if (await server.hasCurrency(args.id)) {
-      await server.deleteCurrency(args.id);
+    if (await server.hasCurrency(args.name)) {
+      await server.deleteCurrency(args.name);
       interaction.editReply({
-        content: `Successfully deleted currency with id ${args.name}.`,
+        content: `Successfully deleted currency with the name of ${args.name}.`,
       });
     } else {
       interaction.editReply({
-        content: `There is no currency with id ${args.name} on this server.`,
+        content: `There is no currency with the name of ${args.name} on this server.`,
       });
     }
   },

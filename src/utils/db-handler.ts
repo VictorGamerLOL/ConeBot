@@ -84,12 +84,13 @@ export default {
       { upsert: true }
     );
   },
-  createMember: async (memberId: String, serverId: String): Promise<void> => {
-    db.collection("servers").updateOne(
-      { guildId: serverId },
-      { $push: { members: { memberId: memberId, inventory: {} } } },
-      { upsert: true }
-    );
+  createMember: async (memberId: String, guildId: String): Promise<void> => {
+    await db
+      .collection("servers")
+      .updateOne(
+        { guildId: guildId },
+        { $push: { members: { memberId: memberId, currencies: {} } } }
+      );
   },
   getCurrencies: async (guildId: string): Promise<shortCurr[] | undefined> => {
     const result = await db
@@ -117,6 +118,7 @@ export default {
       {
         projection: {
           _id: 1,
+          guildId: 1,
         },
       }
     );
@@ -147,5 +149,25 @@ export default {
       }
     );
     return result === null ? undefined : result.currencies[0];
+  },
+  getMember: async (
+    guildId: string,
+    memberId: string
+  ): Promise<member | undefined> => {
+    const result = await db.collection("servers").findOne(
+      {
+        guildId: guildId,
+        members: { $elemMatch: { memberId: memberId } },
+      },
+      {
+        projection: {
+          "members.$": 1,
+        },
+      }
+    );
+    console.log(result);
+    return result === null
+      ? undefined
+      : (((result.members[0] as member).guildId = guildId), result.members[0]);
   },
 };

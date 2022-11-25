@@ -10,6 +10,7 @@ import member from "./subclasses/member";
 
 class server {
   private _guild: Guild;
+  public initDone: boolean = false;
 
   constructor(guild: Guild) {
     this._guild = guild;
@@ -20,6 +21,7 @@ class server {
     if (result === false) {
       await db.createServer(this._guild.id);
     }
+    this.initDone = true;
   }
 
   async currencies(): Promise<shortCurr[] | undefined> {

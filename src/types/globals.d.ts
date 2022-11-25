@@ -39,6 +39,12 @@ declare global {
     curr,
     "Visible" | "Base" | "BaseValue" | "EarnConfig" | "Pay"
   >;
+
+  interface member {
+    guildId: string;
+    memberId: string;
+    currencies: Record<string, number>;
+  }
 }
 
 export {};
