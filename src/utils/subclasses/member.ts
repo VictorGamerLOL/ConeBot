@@ -20,6 +20,24 @@ class member {
       : await db.createMember(this._guildMember.guild.id, this._guildMember.id);
     this.server.initDone === false ? await this.server.init() : undefined;
   }
+
+  async balances(): Promise<globalThis.member> {
+    let result = await db.getMember(
+      this._guildMember.guild.id,
+      this._guildMember.id
+    );
+    result === undefined
+      ? await db.createMember(
+          this._guildMember.guild.id.toString(),
+          this._guildMember.id.toString()
+        )
+      : undefined;
+    result = (await db.getMember(
+      this._guildMember.guild.id,
+      this._guildMember.id
+    )) as globalThis.member;
+    return result;
+  }
 }
 
 export default member;

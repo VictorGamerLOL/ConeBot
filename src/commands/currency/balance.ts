@@ -47,5 +47,6 @@ export default {
       args.member ||
         (await interaction.guild?.members.fetch(interaction.user.id))
     );
+    console.log(await member.balances());
   },
 };

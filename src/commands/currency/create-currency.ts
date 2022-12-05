@@ -8,7 +8,7 @@ import {
 import serverCl from "../../utils/bot-db";
 
 export default {
-  name: "createcurrency",
+  name: "create-currency",
   description: "Create a currency on this server.",
   longDesc:
     "Creates a currency on this server using the given arguments as settings. Some arguments are optional and will be set to their defaults if they are not provided.\

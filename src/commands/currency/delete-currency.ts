@@ -8,7 +8,7 @@ import {
 import serverCl from "../../utils/bot-db";
 
 export default {
-  name: "deletecurrency",
+  name: "delete-currency",
   description: "Delete a currency from this server.", // For some strange reason the inline SQL highlighting applies here.
   longDesc:
     "Deletes a currency from this server, given its id. This action cannot be undone.",

@@ -9,7 +9,7 @@ import serverCl from "../../utils/bot-db";
 //More imports here
 
 export default {
-  name: "listcurrencies",
+  name: "list-currencies",
   description: "List all of the currencies available on this server briefly.",
   longDesc:
     "Lists the id, name and symbol of all currencies available on this server.",
