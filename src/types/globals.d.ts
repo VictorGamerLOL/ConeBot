@@ -32,15 +32,22 @@ declare global {
     Visible: boolean;
     Base: boolean;
     BaseValue: number | null;
-    EarnConfig: any;
     Pay: boolean;
+    ChannelsIsWhitelist: boolean;
+    RolesIsWhitelist: boolean;
+    ChannelsWhitelist: string[];
+    RolesWhitelist: string[];
+    ChannelsBlacklist: string[];
+    RolesBlacklist: string[];
+    EarnMin: number;
+    EarnMax: number;
+    EarnTimeout: number;
+    RoleMultipliers: Record<string, number>;
+    ChannelMultipliers: Record<string, number>;
   }
-  type shortCurr = Omit<
-    curr,
-    "Visible" | "Base" | "BaseValue" | "EarnConfig" | "Pay"
-  >;
+  type shortCurr = Pick<curr, "CurrName" | "Symbol" | "Id">;
 
-  interface member {
+  interface memberBalances {
     guildId: string;
     memberId: string;
     currencies: Record<string, number>;

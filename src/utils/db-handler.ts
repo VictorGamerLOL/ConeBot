@@ -45,6 +45,11 @@ export default {
         return true;
       } else return false;
     });
+    const foundCollectionItems = collections.find((collection) => {
+      if (collection.collectionName === "items") {
+        return true;
+      } else return false;
+    });
     if (foundCollectionServers === undefined)
       await db.createCollection("servers");
     if (foundCollectionBalances === undefined)
@@ -53,6 +58,7 @@ export default {
       await db.createCollection("inventories");
     if (foundCollectionCurrencies === undefined)
       await db.createCollection("currencies");
+    if (foundCollectionItems === undefined) await db.createCollection("items"); // Prettier does not know what consistency is.
   },
   findServer: async (guildId: string): Promise<boolean> => {
     const cached: boolean | undefined = cache.get(`findServer-${guildId}`);
@@ -146,10 +152,29 @@ export default {
     );
   },
   createMember: async (guildId: String, memberId: String): Promise<void> => {
-    await db.collection("servers").updateOne(
-      { guildId: guildId },
+    /**
+     * Since we have 2 places where members are present we put one
+     * in both :).
+     */
+    await db.collection("balances").updateOne(
+      { guildId: guildId, memberId: memberId },
       {
-        $push: { members: { $each: [{ memberId: memberId, currencies: {} }] } },
+        $setOnInsert: {
+          guildId: guildId,
+          memberId: memberId,
+          currencies: {},
+        },
+      },
+      { upsert: true }
+    );
+    await db.collection("inventories").updateOne(
+      { guildId: guildId, memberId: memberId },
+      {
+        $setOnInsert: {
+          guildId: guildId,
+          memberId: memberId,
+          items: {},
+        },
       },
       { upsert: true }
     );
@@ -159,27 +184,25 @@ export default {
       `getCurrencies-${guildId}`
     );
     if (cached !== undefined) return cached;
-    const result = await db
-      .collection("servers")
-      .findOne(
-        { guildId: guildId },
-        { projection: { "currencies.CurrName": 1, "currencies.Symbol": 1 } }
-      );
-    if (result === null) {
-      let thisFile = await import("./db-handler");
-      await thisFile.default.createServer(guildId);
-      return undefined;
-    }
-    return result.currencies.length !== 0 ? result.currencies : undefined;
+    const result = db
+      .collection("currencies")
+      .find({ guildId: guildId }, { projection: { CurrName: 1, Symbol: 1 } });
+    let currencies: shortCurr[] = [];
+    await result.forEach((doc) => {
+      let currency: shortCurr = {
+        CurrName: doc.CurrName,
+        Symbol: doc.Symbol,
+      };
+      currencies.push(currency);
+    });
+    cache.set(`getCurrencies-${guildId}`, currencies, 60 * 60 * 60 * 24); //24 hours
+    return currencies.length === 0 ? undefined : currencies;
   },
-  hasCurrency: async (
-    guildId: string,
-    currencyName: string
-  ): Promise<boolean> => {
-    let result = await db.collection("servers").findOne(
+  hasCurrency: async (guildId: string, CurrName: string): Promise<boolean> => {
+    let result = await db.collection("currencies").findOne(
       {
         guildId: guildId,
-        currencies: { $elemMatch: { CurrName: currencyName } },
+        CurrName: CurrName,
       },
       {
         projection: {
@@ -190,43 +213,39 @@ export default {
     );
     return result === null ? false : true;
   },
-  deleteCurrency: async (
-    guildId: string,
-    currencyName: string
-  ): Promise<void> => {
-    db.collection("servers").updateOne(
-      { guildId: guildId },
-      { $pull: { currencies: { CurrName: currencyName } } }
-    );
+  deleteCurrency: async (guildId: string, CurrName: string): Promise<void> => {
+    db.collection("currencies").deleteOne({
+      guildId: guildId,
+      CurrName: CurrName,
+    });
   },
   getCurrency: async (
     guildId: string,
-    currencyName: string
+    CurrName: string
   ): Promise<curr | undefined> => {
-    const result = await db.collection("servers").findOne(
-      {
-        guildId: guildId,
-        currencies: { $elemMatch: { CurrName: currencyName } },
-      },
-      {
-        projection: {
-          "currencies.$": 1,
-        },
-      }
-    );
-    return result === null ? undefined : result.currencies[0];
+    const result = await db.collection("currencies").findOne({
+      guildId: guildId,
+      CurrName: CurrName,
+    });
+    if (result === null) return undefined;
+    const currency: curr = {
+      ...(result as unknown as curr), //I know what I am doing so SHUT UP TYPESCRIPT. God awfully strict typing system.
+    };
+    return currency;
   },
-  getMember: async (
+  getMemberBalances: async (
     guildId: string,
     memberId: string
-  ): Promise<member | undefined> => {
-    const result = await db.collection("servers").findOne({
+  ): Promise<memberBalances | undefined> => {
+    const result = await db.collection("balances").findOne({
       guildId: guildId,
-      members: { $elemMatch: { memberId: memberId } },
+      memberId: memberId,
     });
-    return result === null
-      ? undefined
-      : (((result.members[0] as member).guildId = guildId), result.members[0]);
+    if (result === null) return undefined;
+    const member: memberBalances = {
+      ...(result as unknown as memberBalances),
+    };
+    return member;
   },
   giveCurrency: async (
     guildId: string,
@@ -238,8 +257,8 @@ export default {
       // So it can shut up about the type
       $inc: {},
     };
-    query.$inc[`members.$.currencies.${currencyName}`] = amount;
-    await db.collection("servers").updateOne(
+    query.$inc[`currencies.${currencyName}`] = amount;
+    await db.collection("balances").updateOne(
       {
         guildId: guildId,
         members: { $elemMatch: { memberId: memberId } },
